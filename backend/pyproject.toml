@@ -1,0 +1,100 @@
+[project]
+name = "unmix-backend"
+version = "0.1.0"
+description = "Unmix: neural audio source separation API (FastAPI + audio-separator)"
+# audio-separator 0.48 supports >=3.10; 3.12 is what this was built and tested on.
+requires-python = ">=3.12,<3.13"
+# Exact pins: this set was installed and tested together (Windows 11, CPU).
+# uv.lock additionally pins every transitive dependency.
+# torch and onnxruntime are NOT here: they come from exactly one of the
+# accelerator groups below (cpu / dml / cuda / cuda12), which the start scripts
+# choose from the hardware (scripts/pick_accel.py). Plain `uv run` uses `cpu`.
+dependencies = [
+    "audio-separator==0.48.0",
+    # audio-separator imports audioread but librosa >= 1.0 no longer pulls it in.
+    "audioread==3.1.0",
+    "numpy==2.5.5",
+    "scipy==1.18.1",
+    "librosa==1.0.1",
+    "soundfile==0.14.0",
+    "pyloudnorm==0.2.0",
+    "pillow==13.0.0",
+    "fastapi==0.163.1",
+    "uvicorn[standard]==0.54.0",
+    "python-multipart==0.0.34",
+    "faster-whisper==1.2.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "httpx==0.28.1",
+]
+eval = [
+    "museval==0.4.1",
+    "musdb==0.4.3",
+]
+# --- accelerator groups: install exactly one (they conflict) ---
+# Any machine. Windows/macOS get torch from PyPI (CPU / Apple MPS); Linux gets the
+# small CPU-only build instead of PyPI's CUDA one.
+cpu = ["torch==2.15.0", "onnxruntime==1.32.0"]
+# Windows with any DirectX 12 GPU (Intel/AMD/older NVIDIA): ONNX models (the fast
+# voice model, live mode) run on the GPU through DirectML; torch stays on CPU.
+dml = [
+    "torch==2.15.0",
+    "onnxruntime-directml==1.24.4 ; sys_platform == 'win32'",
+    "onnxruntime==1.32.0 ; sys_platform != 'win32'",
+]
+# NVIDIA Turing (RTX 20 / T4) or newer with a driver that supports CUDA 13.2+.
+# faster-whisper's CTranslate2 is built for CUDA 12, hence cuBLAS 12 alongside.
+cuda = ["torch==2.15.0", "onnxruntime-gpu==1.32.0", "nvidia-cublas-cu12==12.9.3.13"]
+# NVIDIA Pascal (GTX 10 / MX) or newer with a CUDA 12 driver -- and Google Colab,
+# whose toolkit is CUDA 12. torch 2.14.1 is the last release with CUDA 12 builds.
+# torchvision (imported by audio-separator via onnx2torch) refuses to load when
+# its CUDA major version differs from torch's, and PyPI's Linux build is CUDA 13:
+# take it from the same CUDA 12.6 index as torch.
+cuda12 = ["torch==2.14.1", "torchvision==0.29.1", "onnxruntime-gpu==1.26.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: runs the real neural models (select with -m slow)",
+]
+addopts = "-m 'not slow'"
+filterwarnings = [
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
+
+[tool.uv]
+package = false
+default-groups = ["dev", "cpu"]
+conflicts = [[{ group = "cpu" }, { group = "dml" }, { group = "cuda" }, { group = "cuda12" }]]
+# faster-whisper lists onnxruntime only for its optional VAD (imported lazily,
+# and Unmix runs with vad_filter=False). Dropping it keeps the CPU onnxruntime
+# from overwriting onnxruntime-gpu / -directml, which share its module name.
+dependency-metadata = [
+    { name = "faster-whisper", version = "1.2.1", requires-dist = ["ctranslate2<5,>=4.0", "huggingface-hub>=0.21", "tokenizers<1,>=0.13", "av>=11", "tqdm"] },
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", group = "cpu", marker = "sys_platform == 'linux'" },
+    { index = "pytorch-cu132", group = "cuda" },
+    { index = "pytorch-cu126", group = "cuda12" },
+]
+torchvision = [{ index = "pytorch-cu126", group = "cuda12" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true

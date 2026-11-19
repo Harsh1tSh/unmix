@@ -1,0 +1,29 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Backend runtime data: uploads, stems, SQLite, model weights (multi-GB)
+backend/data/
+backend/eval/data/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets and local tool settings: never commit
+.env
+.env.*
+*.pem
+*.key
+.claude/
+CLAUDE.local.md

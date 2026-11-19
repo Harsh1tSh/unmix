@@ -1,0 +1,35 @@
+[project]
+name = "unmix-speakers"
+version = "0.1.0"
+description = "Isolated environment for Stage 3 (speaker separation with ClearerVoice-Studio MossFormer2)"
+# ClearerVoice pins numpy<2 and rotary_embedding_torch==0.8.3, which conflict with
+# audio-separator (numpy>=2, rotary_embedding_torch<0.7). So this runs in its own
+# venv and the backend calls run_split.py as a subprocess (app/speakers.py).
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "clearvoice==0.1.2",
+]
+
+# The torch build. ClearerVoice needs torchaudio, whose last release (2.11) is
+# built for CUDA 13 on Linux and refuses to load next to a torch with another
+# CUDA major version (or none: it links libtorch_cuda). So:
+#   cpu  = PyPI torch: CPU/MPS on Windows and macOS; on Linux the CUDA 13 build,
+#          which also runs on machines without a GPU. Used by the cpu, dml and
+#          cuda12 backend builds (voice splitting then runs on the CPU there).
+#   cuda = torch + CUDA 13.2, matching the backend's cuda build (incl. Colab).
+[dependency-groups]
+cpu = ["torch==2.15.0"]
+cuda = ["torch==2.15.0"]
+
+[tool.uv]
+package = false
+default-groups = ["cpu"]
+conflicts = [[{ group = "cpu" }, { group = "cuda" }]]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu132", group = "cuda" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
+explicit = true
