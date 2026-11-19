@@ -75,10 +75,10 @@ export function paintNebula(canvas: HTMLCanvasElement, aspect: number, seed = 11
     return sum;
   };
   const img = ctx.createImageData(w, h);
-  // purples only: a cyan tint read as an odd blue patch in the corner
-  const violet = [139, 92, 246];
+  // true purples only (hue ~280-290): over the blue-black base, blue-violets and cyan read as a blue patch
+  const violet = [180, 90, 236];
   const magenta = [232, 121, 249];
-  const lavender = [196, 170, 252];
+  const lavender = [222, 182, 248];
   const scale = 3.2 / w;
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {

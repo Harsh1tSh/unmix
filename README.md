@@ -9,7 +9,7 @@ Free and open source. It runs on your own computer (CPU or GPU), or on a free Co
 
 <img src="docs/media/demo.webp" alt="Unmix in action: a recording becomes seven sound spheres, then nine stems you can hear one by one" width="100%">
 
-<sub>Speech recorded over a song, separated on a Colab T4 GPU (sped up while it waits). <a href="docs/media/demo.mp4">Full demo video (63 s, MP4)</a></sub>
+<sub>Speech recorded over a song, separated on a Colab T4 GPU (sped up while it waits). <a href="docs/media/demo.mp4">Full demo video (50 s, MP4)</a></sub>
 
 </div>
 
