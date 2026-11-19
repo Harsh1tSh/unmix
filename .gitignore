@@ -20,7 +20,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Secrets and local tool settings: never commit
+# Secrets and local tool settings
 .env
 .env.*
 *.pem
