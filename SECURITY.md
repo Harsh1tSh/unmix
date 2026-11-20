@@ -48,7 +48,6 @@ The realistic attackers for a local app are not on the network. They are:
 
 ## Things to know
 
-- **Your git identity.** Commits record the author's name and email. The repository is private; if it is ever made public, that email becomes public too. GitHub's `@users.noreply.github.com` address avoids this for future commits (`git config user.email`).
 - **Data at rest.** Uploads, stems and transcripts live unencrypted under `backend/data/jobs/` for 24 h (or until you press Delete). Anyone with access to your user account can read them.
 - **Downloads contact third parties.** First use of a model downloads it from GitHub, Meta's CDN or Hugging Face, which reveals your IP address to them. After that Unmix works offline.
 - **Do not expose the server.** It has no accounts by design. Do not bind it to `0.0.0.0` or forward its port. The only supported way to reach it remotely is the Colab notebook, which turns on the access key.
