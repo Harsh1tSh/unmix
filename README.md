@@ -27,7 +27,7 @@ Free and open source. It runs on your own computer (CPU or GPU), or on a free Co
 
 **Hold the sphere to record**, or drop a file anywhere. The sphere's seven bands are the seven frequency bands; while you record they light up and swell with your microphone.
 
-<img src="docs/media/landing.jpg" alt="Start page: headline on the left, a sphere made of points of light on the right, options at the bottom" width="100%">
+<!-- <img src="docs/media/landing.jpg" alt="Start page: headline on the left, a sphere made of points of light on the right, options at the bottom" width="100%"> -->
 
 <img src="docs/media/recording.jpg" alt="Recording: the sphere's bands light up in colour with the microphone's levels" width="100%">
 
@@ -37,7 +37,7 @@ Free and open source. It runs on your own computer (CPU or GPU), or on a free Co
 
 **The stem board.** When it is done, the waveform splits into one strand per source and each strand flies into its card. The bar under the title shows what the mix is made of (hover a segment to hear it).
 
-<img src="docs/media/board.jpg" alt="Stem board: '9 sources', a mix composition bar, Voices and Music cards with waveforms, spectrograms and band meters" width="100%">
+<!-- <img src="docs/media/board.jpg" alt="Stem board: '9 sources', a mix composition bar, Voices and Music cards with waveforms, spectrograms and band meters" width="100%"> -->
 
 **Hover = listen.** The card you hover is the only thing playing; the meters follow the music.
 
